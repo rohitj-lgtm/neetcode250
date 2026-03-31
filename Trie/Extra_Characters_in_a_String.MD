@@ -207,12 +207,12 @@ Instead of checking if every substring `s[j..i]` is in a hash set (O(L) per chec
 ### Trie Structure
 
 ```
-dictionary = ["leet", "code"]
+dictionary = ["leet", "code"]   — inserted in REVERSE order
 
 root
- ├── l → e → e → t*
- └── c → o → d → e*
-         (* = is_end = True)
+ ├── t → e → e → l*
+ └── e → d → o → c*
+         (* = isEnd = true)
 ```
 
 ### Algorithm
@@ -237,7 +237,8 @@ class Solution {
         TrieNode root = new TrieNode();
         for (String word : dictionary) {
             TrieNode node = root;
-            for (char ch : word.toCharArray()) {
+            for (int k = word.length() - 1; k >= 0; k--) {   // insert reversed
+                char ch = word.charAt(k);
                 node.children.putIfAbsent(ch, new TrieNode());
                 node = node.children.get(ch);
             }
@@ -268,11 +269,11 @@ class Solution {
 ### Trie Walk Visualization (for `i=4`, matching "leet")
 
 ```
-i=4, walk backwards:
-  j=3: s[3]='t' → root→l→e→e→t  (is_end=True) → dp[4] = min(∞, dp[3])
-  j=2: s[2]='e' → root→l→e→e    (not end)
-  j=1: s[1]='e' → root→l→e      (not end)
-  j=0: s[0]='l' → root→l        (not end)
+i=4, walk backwards (Trie built with reversed words):
+  j=3: s[3]='t' → root→t          (not end)
+  j=2: s[2]='e' → root→t→e        (not end)
+  j=1: s[1]='e' → root→t→e→e      (not end)
+  j=0: s[0]='l' → root→t→e→e→l   (isEnd=true) → dp[4] = min(dp[4], dp[0]) ✓
 ```
 
 ### Complexity
